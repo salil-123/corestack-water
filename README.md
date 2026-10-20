@@ -51,7 +51,7 @@ them (the per-date check is the classifier's held-out score in Section 5.3).
   false water 11.6% against 16.0%, F1 0.83 against 0.80.
 - **Best on small and seasonal water.** Recall 0.77 on GT_BINARY's small ponds against Dynamic
   World's 0.66 and IndiaSAT's 0.17, and 0.78 on seasonal water against 0.70 and 0.39.
-- **Cleaner in towns than Dynamic World.** False water on built-up land 6.2%, against Dynamic World's
+- **Cleaner in towns than Dynamic World.** False water on built-up land 6.5%, against Dynamic World's
   10%, from Sentinel alone (Section 5.3).
 - **Through the monsoon.** Where cloud hides the optical imagery the model switches to radar alone.
   Under monsoon cloud this is worth +0.18 F1 over an optical model with no fallback (Section 5.2).
@@ -189,7 +189,7 @@ downloaded.
 built-up to not water, because roofs and roads are where radar confuses itself. Measured on the
 independent ground truth (Section 7) that rule bought little: without it recall is unchanged, false
 water on land rises from 10.6% to 11.6% and F1 falls from 0.835 to 0.831; false water on built-up land
-rises from 0.8% to 6.2%, still below Dynamic World's 10%. So it was dropped and the model needs only
+rises from 0.8% to 6.5%, still below Dynamic World's 10%. So it was dropped and the model needs only
 Sentinel-1 and Sentinel-2. It can be switched back on for town-heavy areas (`mask_built=True`,
 Section 6).
 
@@ -244,7 +244,7 @@ windows trade water for precision at no gain in F1, and the water they lose is t
 
 So the correction only removes one-fortnight flicker, and the timing of real water stays the
 classifier's. Even so it takes
-the model from 31.0% false water to 11.6%, for 0.08 of recall (Section 7.3).
+the model from 31.1% false water to 11.6%, for 0.08 of recall (Section 7.3).
 
 ### 5.5 Output
 
@@ -267,7 +267,7 @@ for the range.
 | Sentinel-1 window | ±7 days around the slot centre | |
 | correction window (`window`) | 3 slots | 5 or 7 give a cleaner map but delete spells under 6 or 8 weeks; `None` = no correction |
 | padding (`pad`) | 2 slots per side | must be at least half the window |
-| built-up rule (`mask_built`) | off | on sets ESA WorldCover built-up to not water: cleaner towns (0.8% against 6.2% false water on built-up land), adds WorldCover as an input |
+| built-up rule (`mask_built`) | off | on sets ESA WorldCover built-up to not water: cleaner towns (0.8% against 6.5% false water on built-up land), adds WorldCover as an input |
 | layer (`mask`) | see Section 9 | `False` = the model alone |
 
 ## 7. Evaluation
@@ -311,9 +311,9 @@ seasons).
 - **Uncertainty:** 95% intervals from 2,000 bootstrap draws of whole polygons within each asset and
   class (from the project's evaluation runs): our recall 0.79 [0.71, 0.86], false water 11.6% [10.1, 13.2],
   F1 0.83 [0.78, 0.87]; Dynamic World F1 0.80 [0.74, 0.84]. Our F1 is ahead of Dynamic World's in 96%
-  of draws, but the interval of the difference (−0.007 to 0.073) touches zero.
+  of draws, but the interval of the difference (−0.008 to 0.073) touches zero.
 - **Stricter rule:** counting a point as water only if wet in two or more fortnights gives F1 0.833
-  and false water 10.1%, so the result does not hang on single wet fortnights.
+  and false water 10.2%, so the result does not hang on single wet fortnights.
 - **Setting:** urban if at least a quarter of a 500 m ring around the point is WorldCover built-up,
   forest if at least half is tree cover, otherwise rural.
 
@@ -323,14 +323,14 @@ The headline table is in Section 2. The effect of the correction:
 
 | | precision | recall | false water on land | F1 |
 |---|---|---|---|---|
-| classifier, no correction | 0.74 | 0.87 | 31.0% | 0.80 |
+| classifier, no correction | 0.74 | 0.87 | 31.1% | 0.80 |
 | **classifier + correction** | **0.87** | **0.79** | **11.6%** | **0.83** |
 
 False water on each land class:
 
 | | built-up | barren | greenery | farm | forest | GT_BINARY non-water |
 |---|---|---|---|---|---|---|
-| **our model** | **6.2%** | **8.6%** | **13.0%** | **18.9%** | **8.7%** | **14.0%** |
+| **our model** | **6.5%** | **8.6%** | **13.0%** | **18.9%** | **8.7%** | **14.0%** |
 | Dynamic World | 10.0% | 8.6% | 28.7% | 24.3% | 9.7% | 14.6% |
 | IndiaSAT v3 map | 0.0% | 0.7% | 0.1% | 0.7% | 0.0% | 0.0% |
 
@@ -339,7 +339,7 @@ urban water points, too few to score):
 
 | | false water, urban | false water, rural | false water, forest | recall, rural | recall, forest |
 |---|---|---|---|---|---|
-| **our model** | **6.0%** | **10.4%** | 13.3% | **0.78** | **0.80** |
+| **our model** | **6.1%** | **10.4%** | 13.7% | **0.78** | **0.80** |
 | Dynamic World | 9.4% | 17.6% | 9.7% | 0.73 | 0.56 |
 | IndiaSAT v3 map | 0.0% | 0.3% | 0.6% | 0.25 | 0.17 |
 
@@ -354,9 +354,9 @@ urban water points, too few to score):
    imagery is worth +0.18 F1 under monsoon cloud; without it, recall under that cloud falls to 0.55.
 4. **It gives timing no yearly map gives:** water per fortnight and weeks of water per pixel, over any
    date range.
-5. **The temporal correction is what makes it usable:** false water from 31.0% to 11.6%.
+5. **The temporal correction is what makes it usable:** false water from 31.1% to 11.6%.
 6. **Its weak spot is false water on vegetated land and fields** (greenery 13%, farm 19%, forest
-   areas 13%), from wet fields in the monsoon and from slopes and shadow that radar reads as water;
+   areas 14%), from wet fields in the monsoon and from slopes and shadow that radar reads as water;
    in towns it is 6% (roofs and roads), against Dynamic World's 9%.
    That is what the add-on in Section 9 addresses.
 
@@ -389,7 +389,7 @@ Section 7.
 | none (the model alone) | 0.87 | **0.79** | 11.6% | 0.83 | **0.77** |
 | IndiaSAT v3 only | **0.99** | 0.34 | **0.3%** | 0.51 | 0.17 |
 | Dynamic World or IndiaSAT, same year | 0.94 | 0.70 | 4.8% | 0.80 | 0.61 |
-| Dynamic World or IndiaSAT, this year or the 4 before, within 20 m of a stream (the runner's `--layer both`, Section 12.4) | 0.92 | 0.76 | 6.5% | **0.83** | 0.71 |
+| Dynamic World or IndiaSAT, this year or the 4 before, within 20 m of a stream (the runner's `--layer both`, Section 12.4) | 0.92 | 0.76 | 6.6% | **0.83** | 0.71 |
 
 False water on each land class with the same-year Dynamic World or IndiaSAT layer: built-up 1.2%,
 barren 3.1%, greenery 8.5%, farm 11.6%, forest 0.3%, GT_BINARY non-water 3.9%.
@@ -398,17 +398,17 @@ By setting:
 
 | layer | false water, urban | false water, rural | false water, forest | recall, rural | recall, forest |
 |---|---|---|---|---|---|
-| none | 6.0% | 10.4% | 13.3% | **0.78** | **0.80** |
+| none | 6.1% | 10.4% | 13.7% | **0.78** | **0.80** |
 | IndiaSAT v3 only | 0.0% | 0.3% | 0.6% | 0.25 | 0.17 |
-| Dynamic World or IndiaSAT, same year | 1.1% | 5.2% | 2.3% | 0.67 | 0.55 |
+| Dynamic World or IndiaSAT, same year | 1.2% | 5.2% | 2.3% | 0.67 | 0.55 |
 
 - **It buys precision.** With the same-year Dynamic World or IndiaSAT layer, false water falls from
-  11.6% to 4.8%, in towns from 6.0% to 1.1% and in forest areas from 13.3% to 2.3%; precision rises
+  11.6% to 4.8%, in towns from 6.1% to 1.2% and in forest areas from 13.7% to 2.3%; precision rises
   from 0.87 to 0.94.
 - **It costs recall.** Recall falls from 0.79 to 0.70, and on small ponds from 0.77 to 0.61: water the
   existing maps did not see that year is removed with the rest. Overall F1 moves from 0.83 to 0.80.
   Looking back four years and adding the stream check (what the runner's layer does) keeps more of it:
-  recall 0.76, false water 6.5%, F1 0.83.
+  recall 0.76, false water 6.6%, F1 0.83.
 - **IndiaSAT alone is too narrow a layer:** it caps recall at its own 0.34.
 - So the layer suits uses where false water costs more than missed water. Where small and seasonal
   water matters most, use the model alone.
@@ -536,9 +536,11 @@ which finishes in the Earth Engine Tasks tab. Either way `<name>_bands.txt` list
 
 ### 12.6 Checks
 
-`water.py` was checked against the pipeline the scores above were computed with: on a Yamuna box, for
-every layer, with and without the built-up rule, for weeks of water and for a range crossing years, not
-one pixel differs.
+The scores in Sections 2, 7 and 9 come from this `water.py` itself: it was run at all 17,239 evaluation
+points and its calls scored (the correction-window comparison in Section 5.4 is from the evaluation
+pipeline, the same model and steps). Against the earlier pipeline it also matches pixel for pixel on a
+Yamuna box, for every layer, with and without the built-up rule, for weeks of water and for a range
+crossing years.
 
 ## 13. Glossary
 
