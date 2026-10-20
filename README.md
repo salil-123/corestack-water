@@ -461,7 +461,10 @@ giving several the same name merges them, for example kharif (1 to 11), rabi (12
 
 ### 12.1 Setup
 
-1. Python 3.10 or newer: `pip install -r requirements.txt`.
+The code and the model are at https://github.com/salil-123/corestack-water.
+
+1. Get them: `git clone https://github.com/salil-123/corestack-water.git`, then, inside the folder,
+   Python 3.10 or newer: `pip install -r requirements.txt`.
 2. Earth Engine access: run `earthengine authenticate` once, and set `EE_PROJECT` to an Earth Engine
    enabled Google Cloud project (or pass `--project`). On a server, point `EE_SERVICE_ACCOUNT_KEY` at
    a service account key file instead.
